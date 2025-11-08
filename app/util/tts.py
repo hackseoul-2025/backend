@@ -5,7 +5,8 @@ import requests
 
 from app.core.config import env_config
 
-async def speak_openai(text: str):
+async def speak_openai(text: str, gender: str):
+    print("✅ gender value from DB:", repr(gender))
     payload = {
         "text": text,
         "language": "ko",
@@ -18,7 +19,8 @@ async def speak_openai(text: str):
     }
 
     # Supertone API 요청
-    res = requests.post(env_config.supertone_api_url, json=payload, headers=headers)
+    request_url = env_config.supertone_api_mok_url if gender == 'Mok-Sensei' else env_config.supertone_api_cindy_url
+    res = requests.post(request_url, json=payload, headers=headers)
 
     if res.status_code != 200:
         return {"error": f"Supertone API failed: {res.status_code}", "detail": res.text}

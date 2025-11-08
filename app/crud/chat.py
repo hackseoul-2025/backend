@@ -1,4 +1,5 @@
 from app.db.db import connect_database
+from app.models.character import Character
 from app.models.chat_message import ChatMessage
 from app.models.chat_room import ChatRoom
 from app.models.create_chat_message_request import CreateChatMessageRequest
@@ -49,3 +50,10 @@ def find_chat_name_and_location(chat_room_id: int):
         room = db.query(ChatRoom).filter(ChatRoom.id == chat_room_id).first()
 
     return { "name": room.name, "location": room.location }
+
+def find_class_gender(chat_room_id: int):
+    with connect_database() as db:
+        name = find_chat_name_and_location(chat_room_id=chat_room_id)['name']
+        return db.query(Character).filter(
+            Character.class_name == name
+        ).first()

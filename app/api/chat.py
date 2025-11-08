@@ -2,7 +2,7 @@ from app.crud.s3_bucket import find_audio_tts
 from app.util.tts import speak_openai
 from fastapi import APIRouter, status
 
-from app.crud.chat import find_chat_messages, find_chat_name_and_location, insert_chat_message, insert_chat_room, find_chat_rooms
+from app.crud.chat import find_chat_messages, find_chat_name_and_location, find_class_gender, insert_chat_message, insert_chat_room, find_chat_rooms
 from app.util.http import call_llm_api_sync
 from app.models.create_chat_message_request import CreateChatMessageRequest
 from app.models.create_chat_room_request import CreateChatRoomRequest
@@ -25,7 +25,9 @@ async def create_chat_message(chat_room_id: int, request: CreateChatMessageReque
     request.userId = None
     request.contents = llm_response.get("response")
     response = insert_chat_message(chat_room_id=chat_room_id, request=request)
-    tts_result = await speak_openai(request.contents)
+    # 클래스명 기반 성별 찾기
+    gender = find_class_gender(chat_room_id).gender
+    tts_result = await speak_openai(request.contents, gender)
     tts_url = find_audio_tts(tts_result)
     return {"status": 201, "data": {"message": response, "audio": tts_url}}
 

@@ -11,7 +11,8 @@ class EnvConfig(BaseSettings):
     bucket_access_key: str = Field(env='BUCKET_ACCESS_KEY')
     bucket_secret_key: str = Field(env='BUCKET_SECRET_KEY')
     bucket_name: str = Field(env='BUCKET_NAME')
-    supertone_api_url: str = Field(env='SUPERTONE_API_URL')
+    supertone_api_cindy_url: str = Field(env='SUPERTONE_API_CINDY_URL')
+    supertone_api_mok_url: str = Field(env='SUPERTONE_API_MOK_URL')
     supertone_api_key: str = Field(env='SUPERTONE_API_KEY')
 
     class Config:

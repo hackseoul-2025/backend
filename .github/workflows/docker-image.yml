@@ -23,7 +23,8 @@ jobs:
           echo "BUCKET_ACCESS_KEY=${{ secrets.BUCKET_ACCESS_KEY }}" >> ./.env
           echo "BUCKET_SECRET_KEY=${{ secrets.BUCKET_SECRET_KEY }}" >> ./.env
           echo "BUCKET_NAME=${{ secrets.BUCKET_NAME }}" >> ./.env
-          echo "SUPERTONE_API_URL=${{ secrets.SUPERTONE_API_URL }}" >> ./.env
+          echo "SUPERTONE_API_CINDY_URL=${{ secrets.SUPERTONE_API_CINDY_URL }}" >> ./.env
+          echo "SUPERTONE_API_MOK_URL=${{ secrets.SUPERTONE_API_MOK_URL }}" >> ./.env
           echo "SUPERTONE_API_KEY=${{ secrets.SUPERTONE_API_KEY }}" >> ./.env
 
       - name: Set up QEMU
