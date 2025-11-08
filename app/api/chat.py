@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status
 
-from app.crud.chat import find_chat_messages, insert_chat_message, insert_chat_room, find_chat_rooms
+from app.crud.chat import find_chat_messages, find_chat_name_and_location, insert_chat_message, insert_chat_room, find_chat_rooms
+from app.util.http import call_llm_api_sync
 from app.models.create_chat_message_request import CreateChatMessageRequest
 from app.models.create_chat_room_request import CreateChatRoomRequest
 
@@ -17,7 +18,11 @@ def get_chat_messages(chat_room_id: int):
 @chat_api.post("/{chat_room_id}/messages", status_code=status.HTTP_201_CREATED)
 def create_chat_message(chat_room_id: int, request: CreateChatMessageRequest):
     response = insert_chat_message(chat_room_id=chat_room_id, request=request)
-    # TODO: LLM Request and Response
+    llm_request = find_chat_name_and_location(chat_room_id=chat_room_id)
+    llm_response = call_llm_api_sync(llm_request, question=request.contents, room_id=chat_room_id)
+    request.userId = None
+    request.contents = llm_response.get("response")
+    response = insert_chat_message(chat_room_id=chat_room_id, request=request)
     return {"status": 201, "data": response}
 
 @chat_api.post("/{user_id}", status_code=status.HTTP_201_CREATED)
