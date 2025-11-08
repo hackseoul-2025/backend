@@ -9,18 +9,18 @@ chat_api = APIRouter(
     tags=["Chat"]
 )
 
-@chat_api.get("/{chat_room_id}")
+@chat_api.get("/{chat_room_id}/messages")
 def get_chat_messages(chat_room_id: int):
     messages = find_chat_messages(chat_room_id)
     return {"status": 200, "message": messages}
 
-@chat_api.post("/{chat_room_id}")
+@chat_api.post("/{chat_room_id}/messages")
 def create_chat_message(chat_room_id: int, request: CreateChatMessageRequest):
     response = insert_chat_message(chat_room_id=chat_room_id, request=request)
     # TODO: LLM Request and Response
     return {"status": 201, "message": response}
 
-@chat_api.post("/")
+@chat_api.post("/{user_id}")
 def create_chat_room(request: CreateChatRoomRequest):
     result = insert_chat_room(request=request)
     return {"status": 201, "message": {"result": result, "response": f"{request.name}(와)과의 즐거운 대화를 나눠보세요!"}}
