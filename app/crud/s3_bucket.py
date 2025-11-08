@@ -1,4 +1,6 @@
 from boto3 import client
+from fastapi.responses import StreamingResponse
+
 
 from app.core.config import env_config
  
@@ -24,3 +26,24 @@ def find_rag_documents(prefix: str):
             urls.append({"key": key, "url": url})
     
     return urls
+
+def find_yolo_model(model_name: str):
+    generator = iter_s3_file(env_config.bucket_name, f"{model_name}.mlpackage.zip")
+
+    return StreamingResponse(
+        generator,
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": f"attachment; filename={model_name}.mlpackage.zip"
+        }
+    )
+
+def iter_s3_file(bucket: str, key: str, chunk_size: int = 1024*1024):
+    obj = s3_client.get_object(Bucket=bucket, Key=key)
+    body = obj["Body"]
+    
+    while True:
+        chunk = body.read(chunk_size)
+        if not chunk:
+            break
+        yield chunk
