@@ -19,6 +19,10 @@ jobs:
           echo "DB_URL=${{ secrets.DB_URL }}" >> ./.env
           echo "DATABASE=${{ secrets.DATABASE }}" >> ./.env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ./.env
+          echo "BUCKET_REGION=${{ secrets.BUCKET_REGION }}" >> ./.env
+          echo "BUCKET_ACCESS_KEY=${{ secrets.BUCKET_ACCESS_KEY }}" >> ./.env
+          echo "BUCKET_SECRET_KEY=${{ secrets.BUCKET_SECRET_KEY }}" >> ./.env
+          echo "BUCKET_NAME=${{ secrets.BUCKET_NAME }}" >> ./.env
           
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
