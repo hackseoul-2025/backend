@@ -50,5 +50,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           script: |
+            docker pull ${{ secrets.DOCKERHUB_REGISTRY_URL }}:backend
             docker-compose down
             docker-compose up -d
+            docker image prune -f
