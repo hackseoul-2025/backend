@@ -22,14 +22,29 @@ async def create_chat_message(chat_room_id: int, request: CreateChatMessageReque
     response = insert_chat_message(chat_room_id=chat_room_id, request=request)
     llm_request = find_chat_name_and_location(chat_room_id=chat_room_id)
     llm_response = call_llm_api_sync(llm_request, question=request.contents, room_id=chat_room_id)
-    request.userId = None
-    request.contents = llm_response.get("response")
-    response = insert_chat_message(chat_room_id=chat_room_id, request=request)
+
+    # ||| 구분자로 문장 분리
+    full_response = llm_response.get("response")
+    sentences = [s.strip() for s in full_response.split("|||") if s.strip()]
+
     # 클래스명 기반 성별 찾기
     gender = find_class_gender(chat_room_id).gender
-    tts_result = await speak_openai(request.contents, gender)
-    tts_url = find_audio_tts(tts_result)
-    return {"status": 201, "data": {"message": response, "audio": tts_url}}
+
+    # 각 문장마다 DB 저장 및 TTS 생성
+    results = []
+    for sentence in sentences:
+        request.userId = None
+        request.contents = sentence
+        message_response = insert_chat_message(chat_room_id=chat_room_id, request=request)
+        tts_result = await speak_openai(sentence, gender)
+        tts_url = find_audio_tts(tts_result)
+        results.append({
+            "message": message_response,
+            "audio": tts_url,
+            "text": sentence
+        })
+
+    return {"status": 201, "data": results}
 
 @chat_api.post("/{user_id}", status_code=status.HTTP_201_CREATED)
 def create_chat_room(user_id: int, request: CreateChatRoomRequest):
