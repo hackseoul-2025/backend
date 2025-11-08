@@ -1,3 +1,4 @@
+import uuid
 from boto3 import client
 from fastapi.responses import StreamingResponse
 
@@ -47,3 +48,23 @@ def iter_s3_file(bucket: str, key: str, chunk_size: int = 1024*1024):
         if not chunk:
             break
         yield chunk
+
+def find_audio_tts(audio_data):
+    audio_bytes = audio_data.read()
+
+    file_name = f"{uuid.uuid4()}.wav"
+
+    s3_client.put_object(
+        Bucket=env_config.bucket_name,
+        Key=file_name,
+        Body=audio_bytes,
+        ContentType="audio/wav"
+    )
+
+    audio_url = s3_client.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": env_config.bucket_name, "Key": file_name},
+        ExpiresIn=3600
+    )
+
+    return audio_url

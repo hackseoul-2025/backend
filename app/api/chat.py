@@ -1,3 +1,5 @@
+from app.crud.s3_bucket import find_audio_tts
+from app.util.tts import speak_openai
 from fastapi import APIRouter, status
 
 from app.crud.chat import find_chat_messages, find_chat_name_and_location, insert_chat_message, insert_chat_room, find_chat_rooms
@@ -23,7 +25,9 @@ def create_chat_message(chat_room_id: int, request: CreateChatMessageRequest):
     request.userId = None
     request.contents = llm_response.get("response")
     response = insert_chat_message(chat_room_id=chat_room_id, request=request)
-    return {"status": 201, "data": response}
+    tts_result = speak_openai(response.contents)
+    tts_url = find_audio_tts(tts_result)
+    return {"status": 201, "data": {"message": response, "audio": tts_url}}
 
 @chat_api.post("/{user_id}", status_code=status.HTTP_201_CREATED)
 def create_chat_room(user_id: int, request: CreateChatRoomRequest):

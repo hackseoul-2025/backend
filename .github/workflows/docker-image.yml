@@ -23,6 +23,7 @@ jobs:
           echo "BUCKET_ACCESS_KEY=${{ secrets.BUCKET_ACCESS_KEY }}" >> ./.env
           echo "BUCKET_SECRET_KEY=${{ secrets.BUCKET_SECRET_KEY }}" >> ./.env
           echo "BUCKET_NAME=${{ secrets.BUCKET_NAME }}" >> ./.env
+          echo "OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}" >> ./.env
           
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
