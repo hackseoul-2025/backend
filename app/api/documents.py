@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from app.crud.s3_bucket import get_rag_documents
+from app.crud.s3_bucket import find_rag_documents
 
 document_api = APIRouter(
     prefix="/documents",
@@ -9,5 +9,5 @@ document_api = APIRouter(
 
 @document_api.get("/{category}", status_code=status.HTTP_200_OK)
 def get_rag_documents(category: str):
-    urls = get_rag_documents(category)
+    urls = find_rag_documents(category)
     return {"status": 200, "message": urls}

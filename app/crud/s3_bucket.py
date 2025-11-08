@@ -9,7 +9,7 @@ s3_client = client(
     region_name=env_config.bucket_region
 )
 
-def get_rag_documents(prefix: str):
+def find_rag_documents(prefix: str):
     paginator = s3_client.get_paginator('list_objects_v2')
     
     urls = []
