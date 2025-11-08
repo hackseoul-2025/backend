@@ -10,4 +10,4 @@ document_api = APIRouter(
 @document_api.get("/{category}", status_code=status.HTTP_200_OK)
 def get_rag_documents(category: str):
     urls = find_rag_documents(category)
-    return {"status": 200, "message": urls}
+    return {"status": 200, "data": urls}
