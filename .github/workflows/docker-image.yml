@@ -1,0 +1,56 @@
+name: Backend Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Touch .env
+        run: |
+          touch .env
+          echo "DB_URL=${{ secrets.DB_URL }}" >> ./.env
+          echo "DATABASE=${{ secrets.DATABASE }}" >> /.env
+          echo "DB_URL=${{ secrets.DB_URL }}" >> ./.env
+          
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          ecr: auto
+          logout: true
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Build and push Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_REGISTRY_URL }}:backend
+          cache-from: type=gha  # gha = Guthub Actions 용 캐시
+          cache-to: type=gha,mode=max
+
+      # - name: Deploy
+      #   uses: appleboy/ssh-action@v1.0.0
+      #   with:
+      #     host: ${{ secrets.BASTION_HOST }}
+      #     username: ${{ secrets.BASTION_USER }}
+      #     key: ${{ secrets.KEY }}
+      #     script: |
+      #       ssh -i "${{ secrets.PEM_NAME }}".pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.WAS_IP }} 'bash /home/ubuntu/deploy.sh'
