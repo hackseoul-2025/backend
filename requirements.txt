@@ -9,3 +9,4 @@ pydantic-settings
 pydantic
 aiofiles
 boto3
+google-generativeai

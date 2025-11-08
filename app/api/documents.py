@@ -8,6 +8,6 @@ document_api = APIRouter(
 )
 
 @document_api.get("/{category}")
-def index(category: str):
+def get_rag_documents(category: str):
     urls = get_rag_documents(category)
     return {"status": 200, "message": urls}
