@@ -25,7 +25,7 @@ async def create_chat_message(chat_room_id: int, request: CreateChatMessageReque
     request.userId = None
     request.contents = llm_response.get("response")
     response = insert_chat_message(chat_room_id=chat_room_id, request=request)
-    tts_result = await speak_openai(response.contents)
+    tts_result = await speak_openai(request.contents)
     tts_url = find_audio_tts(tts_result)
     return {"status": 201, "data": {"message": response, "audio": tts_url}}
 
