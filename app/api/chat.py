@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.crud.chat import find_chat_messages, insert_chat_message, insert_chat_room
+from app.crud.chat import find_chat_messages, insert_chat_message, insert_chat_room, find_chat_rooms
 from app.models.create_chat_message_request import CreateChatMessageRequest
 from app.models.create_chat_room_request import CreateChatRoomRequest
 
@@ -21,6 +21,11 @@ def create_chat_message(chat_room_id: int, request: CreateChatMessageRequest):
     return {"status": 201, "message": response}
 
 @chat_api.post("/{user_id}")
-def create_chat_room(request: CreateChatRoomRequest):
-    result = insert_chat_room(request=request)
+def create_chat_room(user_id: int, request: CreateChatRoomRequest):
+    result = insert_chat_room(user_id, request=request)
     return {"status": 201, "message": {"result": result, "response": f"{request.name}(와)과의 즐거운 대화를 나눠보세요!"}}
+
+@chat_api.get("/{user_id}")
+def get_chat_rooms(user_id: int):
+    rooms = find_chat_rooms(user_id)
+    return {"status": 200, "message": rooms}

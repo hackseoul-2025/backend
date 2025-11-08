@@ -24,9 +24,9 @@ def insert_chat_message(chat_room_id: int, request: CreateChatMessageRequest):
 
     return message
 
-def insert_chat_room(request: CreateChatRoomRequest):
+def insert_chat_room(user_id: int, request: CreateChatRoomRequest):
     chat_room = ChatRoom(
-        user_id=1,
+        user_id=user_id,
         name=request.name
     )
 
@@ -36,3 +36,9 @@ def insert_chat_room(request: CreateChatRoomRequest):
         db.refresh(chat_room)
 
     return chat_room
+
+def find_chat_rooms(user_id: int):
+    with connect_database() as db:
+        rooms = db.query(ChatRoom).filter(ChatRoom.user_id == user_id).all()
+
+    return rooms
