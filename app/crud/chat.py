@@ -13,6 +13,7 @@ def find_chat_messages(chat_room_id: int):
 def insert_chat_message(chat_room_id: int, request: CreateChatMessageRequest):
     message = ChatMessage(
         chat_room_id = chat_room_id,
+        user_id = request.userId,
         contents = request.contents
     )
 
