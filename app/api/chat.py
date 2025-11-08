@@ -18,14 +18,14 @@ def get_chat_messages(chat_room_id: int):
     return {"status": 200, "data": messages}
 
 @chat_api.post("/{chat_room_id}/messages", status_code=status.HTTP_201_CREATED)
-def create_chat_message(chat_room_id: int, request: CreateChatMessageRequest):
+async def create_chat_message(chat_room_id: int, request: CreateChatMessageRequest):
     response = insert_chat_message(chat_room_id=chat_room_id, request=request)
     llm_request = find_chat_name_and_location(chat_room_id=chat_room_id)
     llm_response = call_llm_api_sync(llm_request, question=request.contents, room_id=chat_room_id)
     request.userId = None
     request.contents = llm_response.get("response")
     response = insert_chat_message(chat_room_id=chat_room_id, request=request)
-    tts_result = speak_openai(response.contents)
+    tts_result = await speak_openai(response.contents)
     tts_url = find_audio_tts(tts_result)
     return {"status": 201, "data": {"message": response, "audio": tts_url}}
 

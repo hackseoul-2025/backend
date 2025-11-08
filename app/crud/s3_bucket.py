@@ -50,14 +50,12 @@ def iter_s3_file(bucket: str, key: str, chunk_size: int = 1024*1024):
         yield chunk
 
 def find_audio_tts(audio_data):
-    audio_bytes = audio_data.read()
-
     file_name = f"{uuid.uuid4()}.wav"
 
     s3_client.put_object(
         Bucket=env_config.bucket_name,
         Key=file_name,
-        Body=audio_bytes,
+        Body=audio_data,
         ContentType="audio/wav"
     )
 
