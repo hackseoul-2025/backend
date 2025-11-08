@@ -8,3 +8,4 @@ cryptography
 pydantic-settings
 pydantic
 aiofiles
+boto3

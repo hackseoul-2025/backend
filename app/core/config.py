@@ -7,6 +7,10 @@ class EnvConfig(BaseSettings):
     db_url: str = Field(env='DB_URL')
     database: str = Field(env='DATABASE')
     db_password: str = Field(env='DB_PASSWORD')
+    bucket_region: str = Field(env='BUCKET_REGION')
+    bucket_access_key: str = Field(env='BUCKET_ACCESS_KEY')
+    bucket_secret_key: str = Field(env='BUCKET_SECRET_KEY')
+    bucket_name: str = Field(env='BUCKET_NAME')
 
     class Config:
         env_file = ".env"
