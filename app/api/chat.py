@@ -1,4 +1,4 @@
-from app.crud.s3_bucket import find_audio_tts
+from app.crud.s3_bucket import find_audio_tts, get_class_image
 from app.util.tts import speak_openai
 from fastapi import APIRouter, status
 
@@ -40,3 +40,8 @@ def create_chat_room(user_id: int, request: CreateChatRoomRequest):
 def get_chat_rooms(user_id: int):
     rooms = find_chat_rooms(user_id)
     return {"status": 200, "data": rooms}
+
+@chat_api.get("/{chat_room_id}/images", status_code=status.HTTP_200_OK)
+def get_chat_rooms(chat_room_id: int, name: str):
+    url = get_class_image(name)
+    return {"status": 200, "data": url}

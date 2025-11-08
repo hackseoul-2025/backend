@@ -66,3 +66,10 @@ def find_audio_tts(audio_data):
     )
 
     return audio_url
+
+def get_class_image(name: str):
+    return s3_client.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": env_config.bucket_name, "Key": f"{name}.png"},
+        ExpiresIn=3600
+    )
