@@ -62,7 +62,22 @@ def find_chat_rooms(user_id: int):
     with connect_database() as db:
         rooms = db.query(ChatRoom).filter(ChatRoom.user_id == user_id).all()
 
-    return rooms
+    # 각 메시지에 이미지 URL 추가
+    result = []
+    for room in rooms:
+        image_url = get_class_image(room.name)
+        room_dict = {
+            "id":room.id,
+            "user_id": room.user_id,
+            "name": room.name,
+            "location": room.location,
+            "created_at": room.created_at,
+            "updated_at": room.updated_at,
+            "image": image_url
+        }
+        result.append(room_dict)
+
+    return result
 
 def find_chat_name_and_location(chat_room_id: int):
     with connect_database() as db:
